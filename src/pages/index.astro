@@ -1,6 +1,7 @@
 ---
-import "../styles/gloal.css";
-const title = "hello world";
+import BlockRenderer from "../components/BlockRenderer.astro";
+import type { Block } from "@wp-block-tools/styles";
+import CommonHead from "../components/CommonHead.astro";
 const response = await fetch(`${import.meta.env.WPGRAPHQL_URL}`, {
   method: "POST",
   headers: {
@@ -13,24 +14,23 @@ const response = await fetch(`${import.meta.env.WPGRAPHQL_URL}`, {
 			... on Page {
 				id
 				blocks
+        seo {
+          metaDesc
+          title
+        }
 			}
 		}
 	}`,
   }),
 });
 const { data } = await response.json();
-console.log(data.nodeByUri);
+const blocks = (data.nodeByUri?.blocks || []) as Block[];
+const { title, metaDesc } = data.nodeByUri?.seo || {};
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="generator" content={Astro.generator} />
-    <title>Astro</title>
-  </head>
+<html lang="ja">
+  <CommonHead title={title || ""} description={metaDesc || ""} />
   <body>
-    <h1 class="bg-red-500">{title}</h1>
+    <BlockRenderer blocks={blocks} />
   </body>
 </html>
