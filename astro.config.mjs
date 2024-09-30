@@ -1,11 +1,18 @@
 // @ts-check
-import { defineConfig } from 'astro/config';
+import { defineConfig } from "astro/config";
+import tailwind from "@astrojs/tailwind";
+import { loadEnv } from "vite";
 
-import tailwind from '@astrojs/tailwind';
+const { IMAGE_DOMAIN } = loadEnv(process.env.NODE_ENV || "development", process.cwd(), "");
 
 // https://astro.build/config
 export default defineConfig({
-  integrations: [tailwind({
-    applyBaseStyles:false
-  })]
+  image: {
+    domains: [IMAGE_DOMAIN],
+  },
+  integrations: [
+    tailwind({
+      applyBaseStyles: false,
+    }),
+  ],
 });

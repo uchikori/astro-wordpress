@@ -2,11 +2,14 @@
 import BlockRendererChildren from "./BlockRenderer.astro";
 import { getBlockStyling } from "@wp-block-tools/styles";
 import type { Block } from "@wp-block-tools/styles";
+import { Image } from "astro:assets";
+import Navigation from "./Navigation.astro";
+import NavigationLink from "./NavigationLink.astro";
+import NavigationSubmenu from "./NavigationSubmenu.astro";
 type Props = {
   blocks: Block[];
 };
 const { blocks } = Astro.props;
-console.log(blocks);
 ---
 
 {
@@ -14,16 +17,39 @@ console.log(blocks);
     const { styles, classes } = getBlockStyling(block);
 
     switch (block.name) {
+      case "core/navigation-submenu":
+        return (
+          <NavigationSubmenu styles={styles} classes={classes} label={block.attributes?.label || ""} url={block.attributes?.url || ""}>
+            <BlockRendererChildren blocks={block.innerBlocks || []} />
+          </NavigationSubmenu>
+        );
+      case "core/navigation-link":
+        return <NavigationLink styles={styles} classes={classes} label={block.attributes?.label || ""} url={block.attributes?.url || ""} />;
+      case "core/navigation":
+        return (
+          <Navigation classes={classes} styles={styles}>
+            <BlockRendererChildren blocks={block.innerBlocks || []} />
+          </Navigation>
+        );
       case "core/paragraph":
         return <p class={classes} style={styles} set:html={block.attributes?.content} />;
       case "core/columns":
       case "core/column":
       case "core/post-content":
+      case "core/group":
         return (
           <div class={classes} style={styles}>
             <BlockRendererChildren blocks={block.innerBlocks || []} />
           </div>
         );
+      case "core/site-logo":
+        return (
+          <div class={classes} style={styles}>
+            <Image src={block.attributes?.url || ""} width={block.attributes?.width || "50"} height={block.attributes?.width || "50"} alt={block.attributes?.alt} />
+          </div>
+        );
+      case "core/template-part":
+        return <BlockRendererChildren blocks={block.innerBlocks || []} />;
       default:
         return null;
     }
