@@ -26,7 +26,7 @@ const { blocks } = Astro.props;
         return <Heading level={block.attributes?.level || 2} classes={classes} styles={styles} content={block.attributes?.content || ""} />;
       case "core/cover":
         return (
-          <Cover classes={classes} styles={styles} url={block.attributes?.url} width={block.attributes?.width} height={block.attributes?.height}>
+          <Cover classes={classes} styles={styles} url={block.attributes?.url} width={block.attributes?.width} height={block.attributes?.height} dimRatio={block.attributes?.dimRatio} overlayColor={block.attributes?.overlayColor} customOverlayColor={block.attributes?.customOverlayColor} minHeight={block.attributes?.minHeight} minHeightUnit={block.attributes?.minHeightUnit}>
             <BlockRendererChildren blocks={block.innerBlocks || []} />
           </Cover>
         );

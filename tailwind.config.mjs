@@ -7,6 +7,9 @@ export default {
         "event-horizon": "var(--color--event-horizon)",
         "blast-off": "var(--color--blast-off)",
       },
+      minHeight: {
+        inherit: "inherit",
+      },
     },
   },
   plugins: [],
