@@ -1,0 +1,74 @@
+---
+import type { GetStaticPaths } from "astro";
+import BlockRenderer from "../components/BlockRenderer.astro";
+import type { Block } from "@wp-block-tools/styles";
+import CommonHead from "../components/CommonHead.astro";
+
+export async function getStaticPaths() {
+  const response = await fetch(`${import.meta.env.WPGRAPHQL_URL}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      query: `
+      query AllPagesQuery {
+        pages(first: 10000) {
+          nodes {
+            id
+            blocks
+            seo {
+              metaDesc
+              title
+            }
+            uri
+          }
+        }
+      }
+      `,
+    }),
+  });
+  const { data } = await response.json();
+  return data.pages.nodes.map((page: any) => {
+    return {
+      params: { slug: page.uri === "/" ? undefined : page.uri },
+    };
+  });
+}
+
+const response = await fetch(`${import.meta.env.WPGRAPHQL_URL}`, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    query: `
+	query PageQuery($uri: String!) {
+		nodeByUri(uri: $uri) {
+			... on Page {
+				id
+				blocks
+        seo {
+          metaDesc
+          title
+        }
+			}
+		}
+	}`,
+    variables: {
+      uri: Astro.params.slug || "/",
+    },
+  }),
+});
+const { data } = await response.json();
+// const { blocks } = Astro.props;
+const blocks = (data.nodeByUri?.blocks || []) as Block[];
+const { title, metaDesc } = data.nodeByUri?.seo || {};
+---
+
+<html lang="ja">
+  <CommonHead title={title || ""} description={metaDesc || ""} />
+  <body>
+    <BlockRenderer blocks={blocks} />
+  </body>
+</html>

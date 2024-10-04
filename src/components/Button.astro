@@ -1,0 +1,15 @@
+---
+import { joinClasses } from "../utils/joinClasses";
+import { replaceUrls } from "../utils/replaceUrls";
+type Props = {
+  url?: string;
+  styles: string;
+  classes: string;
+  content: string;
+};
+
+const { styles, classes, content, url } = Astro.props;
+const href = replaceUrls(url || "#", Astro.url.host);
+---
+
+<a href={href} class={joinClasses("inline-block uppercase font-bold tracking-[1.3px] bg-blast-off", classes)} style={styles} set:html={content} />

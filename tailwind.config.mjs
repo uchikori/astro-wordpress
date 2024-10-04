@@ -5,6 +5,7 @@ export default {
     extend: {
       colors: {
         "event-horizon": "var(--color--event-horizon)",
+        "blast-off": "var(--color--blast-off)",
       },
     },
   },
