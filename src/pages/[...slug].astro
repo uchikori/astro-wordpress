@@ -15,12 +15,11 @@ export async function getStaticPaths() {
       query AllPagesQuery {
         pages(first: 10000) {
           nodes {
-            id
-            blocks
-            seo {
-              metaDesc
-              title
-            }
+            uri
+          }
+        }
+        properties(first: 10000) {
+          nodes {
             uri
           }
         }
@@ -29,7 +28,9 @@ export async function getStaticPaths() {
     }),
   });
   const { data } = await response.json();
-  return data.pages.nodes.map((page: any) => {
+  console.log(data.properties.nodes);
+
+  return [...data.pages.nodes, ...data.properties.nodes].map((page: any) => {
     return {
       params: { slug: page.uri === "/" ? undefined : page.uri },
     };
@@ -43,18 +44,18 @@ const response = await fetch(`${import.meta.env.WPGRAPHQL_URL}`, {
   },
   body: JSON.stringify({
     query: `
-	query PageQuery($uri: String!) {
-		nodeByUri(uri: $uri) {
-			... on Page {
-				id
-				blocks
-        seo {
-          metaDesc
-          title
+    query PageQuery($uri: String!) {
+      nodeByUri(uri: $uri) {
+        ... on ContentNode {
+          id
+          blocks
+          seo {
+            metaDesc
+            title
+          }
         }
-			}
-		}
-	}`,
+      }
+    }`,
     variables: {
       uri: Astro.params.slug || "/",
     },

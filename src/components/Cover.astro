@@ -33,7 +33,7 @@ if (overlayColor) {
 <div class={joinClasses(classes, "relative")} style={joinStyles(styles, `min-height: ${minHeightValue};`)}>
   {!!url && <Image class="absolute w-full h-full object-cover !max-w-full" width={width || 1000} height={height || 1000} src={url} alt="" />}
   <div class="absolute inset-0 bg-black !max-w-full !mt-0" style={`opacity: ${dimRatio / 100}; ${overlayStyle}`}></div>
-  <div class="z-10 relative !mt-0 flex flex-col justify-center min-h-inherit">
+  <div class="z-10 relative !mt-0 flex flex-col justify-center min-h-inherit gap-4">
     <slot />
   </div>
 </div>
