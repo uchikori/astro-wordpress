@@ -42,7 +42,6 @@ const response = await fetch(`${import.meta.env.WPGRAPHQL_URL}`, {
 const { data } = await response.json();
 
 const { title, description } = Astro.props;
-console.log(description);
 ---
 
 <head>

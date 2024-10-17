@@ -12,6 +12,7 @@ import Button from "./Button.astro";
 import TickItem from "./TickItem.astro";
 import SocialLink from "./SocialLink.astro";
 import PropertyDetails from "./PropertyDetails.astro";
+import PropertySearch from "./PropertySearch.astro";
 type Props = {
   blocks: Block[];
 };
@@ -23,6 +24,8 @@ const { blocks } = Astro.props;
     const { styles, classes } = getBlockStyling(block);
 
     switch (block.name) {
+      case "astroestates/property-search":
+        return <PropertySearch />;
       case "astroestates/property-details":
         return <PropertyDetails price={block.attributes?.price || ""} bedrooms={block.attributes?.bedrooms || ""} bathrooms={block.attributes?.bathrooms || ""} />;
       case "core/gallery":
