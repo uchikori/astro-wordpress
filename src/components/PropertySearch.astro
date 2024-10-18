@@ -1,25 +1,137 @@
 ---
+import { faBed, faBath } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Image } from "astro:assets";
+import numeral from "numeral";
 
+const { searchParams } = Astro.url;
+console.log(searchParams);
+
+//searchParamsから検索条件を取得(URLパラメーターの値)
+const bedrooms = searchParams.get("bedrooms") || "";
+const bathrooms = searchParams.get("bathrooms") || "";
+const minPrice = searchParams.get("minPrice") || "";
+const maxPrice = searchParams.get("maxPrice") || "";
+const currentPage = searchParams.get("page");
+console.log(currentPage);
+
+//URLクエリパラメーターを文字列化
+searchParams.delete("page");
+console.log(searchParams);
+console.log(currentPage);
+
+const searchParamsString = searchParams.toString();
+console.log(searchParamsString);
+
+//APIから全プロパティの情報を取得
+const response = await fetch(`${Astro.url.origin}/api/page-data/properties.json`);
+const { properties } = await response.json();
+
+let filteredProperties = properties;
+
+//searchParamsによる検索結果のフィルター
+if (bedrooms && !isNaN(parseInt(bedrooms))) {
+  filteredProperties = filteredProperties.filter((property: any) => {
+    return property.propertyDetails.bedrooms >= parseInt(bedrooms);
+  });
+}
+if (bathrooms && !isNaN(parseInt(bathrooms))) {
+  filteredProperties = filteredProperties.filter((property: any) => {
+    return property.propertyDetails.bathrooms >= parseInt(bathrooms);
+  });
+}
+if (minPrice && !isNaN(parseInt(minPrice))) {
+  filteredProperties = filteredProperties.filter((property: any) => {
+    return property.propertyDetails.price >= parseInt(minPrice);
+  });
+}
+if (maxPrice && !isNaN(parseInt(maxPrice))) {
+  filteredProperties = filteredProperties.filter((property: any) => {
+    return property.propertyDetails.price <= parseInt(maxPrice);
+  });
+}
+
+//ページネーション
+const PostsPerPage = 3;
+const Posts = filteredProperties.length;
+const totalPages = Math.ceil(Posts / PostsPerPage);
+
+//現在のページ
+let pageNumber;
+//URLクエリパラメーターから現在のページを取得したcurrentPageが存在する場合
+if (currentPage) {
+  //currentPageを数値に変換
+  const parsedPage = parseInt(currentPage);
+  //数値に変換できない場合は1を設定,そうでない場合は現在のページを設定
+  pageNumber = isNaN(parsedPage) ? 1 : parsedPage;
+} else {
+  //現在のページを1に設定
+  pageNumber = 1;
+}
+
+//開始位置（1ページ目なら開始位置は0,2ページ目なら開始位置は3, 3ページ目なら開始位置は6）
+const offset = (pageNumber - 1) * PostsPerPage;
+//配列の分割（1ページ目なら0~2番目までの配列,2ページ目なら3~5番目までの配列, 3ページ目なら6~8番目までの配列を取得）
+filteredProperties = filteredProperties.slice(offset, offset + PostsPerPage);
 ---
 
 <form method="GET">
   <fieldset class="pb-2 grid grid-cols-1 sm:grid-cols-2 gap-2 md:grid-cols-4">
     <div>
       <label class="font-bold"><strong>Min bedrooms</strong></label>
-      <input type="number" name="bedrooms" class="w-full py-1 px-2 border border-event-horizon rounded-sm" />
+      <input value={bedrooms} type="number" name="bedrooms" class="w-full py-1 px-2 border border-event-horizon rounded-sm" />
     </div>
     <div>
-      <label class="font-bold"><strong>Max bedrooms</strong></label>
-      <input type="number" name="maxBedrooms" class="w-full py-1 px-2 border border-event-horizon rounded-sm" />
+      <label class="font-bold"><strong>Min bathrooms</strong></label>
+      <input value={bathrooms} type="number" name="bathrooms" class="w-full py-1 px-2 border border-event-horizon rounded-sm" />
     </div>
     <div>
       <label class="font-bold"><strong>Min price</strong></label>
-      <input type="number" name="price" class="w-full py-1 px-2 border border-event-horizon rounded-sm" />
+      <input value={minPrice} type="number" name="minPrice" class="w-full py-1 px-2 border border-event-horizon rounded-sm" />
     </div>
     <div>
       <label class="font-bold"><strong>Max price</strong></label>
-      <input type="number" name="maxPrice" class="w-full py-1 px-2 border border-event-horizon rounded-sm" />
+      <input value={maxPrice} type="number" name="maxPrice" class="w-full py-1 px-2 border border-event-horizon rounded-sm" />
     </div>
   </fieldset>
   <button type="submit" class="inline-block uppercase font-bold tracking-[1.3px] bg-event-horizon w-full text-white rounded-full py-3 px-6">Search</button>
 </form>
+<div class="grid gap-2 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
+  {
+    filteredProperties.map((property: any) => {
+      return (
+        <a href={property.uri} class="p-2 border border-zinc-200 hover:bg-zinc-200 rounded-md">
+          {!!property.featuredImage && <Image transition:name={`cover-${property.databaseId}`} src={property.featuredImage.node.sourceUrl} width={property.featuredImage.node.mediaDetails.width} height={property.featuredImage.node.mediaDetails.height} alt={property.featuredImage.node.altText} class="h-40 w-full object-cover" />}
+          <p class="pt-2" transition:name={`post-title-${property.databaseId}`}>
+            <strong>{property.title}</strong>
+          </p>
+          <p class="text-2xl bold" transition:name={`price-${property.databaseId}`}>
+            ￥{numeral(property.propertyDetails.price).format("0,0")}
+          </p>
+          <div class="flex gap-8">
+            <div transition:name={`bedrooms-${property.databaseId}`}>
+              <FontAwesomeIcon icon={faBed} className="pr-2" />
+              {property.propertyDetails.bedrooms}
+            </div>
+            <div transition:name={`bathrooms-${property.databaseId}`}>
+              <FontAwesomeIcon icon={faBath} className="pr-2" />
+              {property.propertyDetails.bathrooms}
+            </div>
+          </div>
+        </a>
+      );
+    })
+  }
+</div>
+
+<div class="flex gap-2 justify-center">
+  {
+    Array.from({ length: totalPages }).map((_, index) => {
+      return (
+        <a class={`block px-3 py-2 rounded-md ${index + 1 === pageNumber ? "bg-event-horizon text-white" : "text-event-horizon hover:bg-zinc-200 "}`} href={`?${searchParamsString ? `${searchParams}&page=${index + 1}` : `page=${index + 1}`}`}>
+          {index + 1}
+        </a>
+      );
+    })
+  }
+</div>

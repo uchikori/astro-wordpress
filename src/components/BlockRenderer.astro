@@ -14,9 +14,10 @@ import SocialLink from "./SocialLink.astro";
 import PropertyDetails from "./PropertyDetails.astro";
 import PropertySearch from "./PropertySearch.astro";
 type Props = {
+  postId: number;
   blocks: Block[];
 };
-const { blocks } = Astro.props;
+const { blocks, postId } = Astro.props;
 ---
 
 {
@@ -27,14 +28,14 @@ const { blocks } = Astro.props;
       case "astroestates/property-search":
         return <PropertySearch />;
       case "astroestates/property-details":
-        return <PropertyDetails price={block.attributes?.price || ""} bedrooms={block.attributes?.bedrooms || ""} bathrooms={block.attributes?.bathrooms || ""} />;
+        return <PropertyDetails postId={postId} price={block.attributes?.price || ""} bedrooms={block.attributes?.bedrooms || ""} bathrooms={block.attributes?.bathrooms || ""} />;
       case "core/gallery":
         return (
           <div class={classes} style={styles}>
             {(block.innerBlocks || []).map((innerBlock) => {
               return (
                 <div>
-                  <BlockRendererChildren blocks={[innerBlock]} />
+                  <BlockRendererChildren blocks={[innerBlock]} postId={postId} />
                 </div>
               );
             })}
@@ -43,7 +44,7 @@ const { blocks } = Astro.props;
       case "astroestates/tick-item":
         return (
           <TickItem styles={styles} classes={classes} content={block.attributes?.content || ""}>
-            <BlockRendererChildren blocks={block.innerBlocks || []} />
+            <BlockRendererChildren blocks={block.innerBlocks || []} postId={postId} />
           </TickItem>
         );
       case "core/image":
@@ -52,17 +53,17 @@ const { blocks } = Astro.props;
         return <Button styles={styles} classes={classes} content={block.attributes?.content || ""} url={block.attributes?.url || ""} />;
       case "core/heading":
       case "core/post-title":
-        return <Heading level={block.attributes?.level || 2} classes={classes} styles={styles} content={block.attributes?.content || ""} />;
+        return <Heading transitionName={block.name === "core/post-title" ? `post-title-${postId}` : ""} level={block.attributes?.level || 2} classes={classes} styles={styles} content={block.attributes?.content || ""} />;
       case "core/cover":
         return (
-          <Cover classes={classes} styles={styles} url={block.attributes?.url} width={block.attributes?.width} height={block.attributes?.height} dimRatio={block.attributes?.dimRatio} overlayColor={block.attributes?.overlayColor} customOverlayColor={block.attributes?.customOverlayColor} minHeight={block.attributes?.minHeight} minHeightUnit={block.attributes?.minHeightUnit}>
-            <BlockRendererChildren blocks={block.innerBlocks || []} />
+          <Cover postId={postId} classes={classes} styles={styles} url={block.attributes?.url} width={block.attributes?.width} height={block.attributes?.height} dimRatio={block.attributes?.dimRatio} overlayColor={block.attributes?.overlayColor} customOverlayColor={block.attributes?.customOverlayColor} minHeight={block.attributes?.minHeight} minHeightUnit={block.attributes?.minHeightUnit}>
+            <BlockRendererChildren blocks={block.innerBlocks || []} postId={postId} />
           </Cover>
         );
       case "core/navigation-submenu":
         return (
           <NavigationSubmenu styles={styles} classes={classes} label={block.attributes?.label || ""} url={block.attributes?.url || ""}>
-            <BlockRendererChildren blocks={block.innerBlocks || []} />
+            <BlockRendererChildren blocks={block.innerBlocks || []} postId={postId} />
           </NavigationSubmenu>
         );
       case "core/navigation-link":
@@ -70,7 +71,7 @@ const { blocks } = Astro.props;
       case "core/navigation":
         return (
           <Navigation classes={classes} styles={styles}>
-            <BlockRendererChildren blocks={block.innerBlocks || []} />
+            <BlockRendererChildren blocks={block.innerBlocks || []} postId={postId} />
           </Navigation>
         );
       case "core/paragraph":
@@ -83,7 +84,7 @@ const { blocks } = Astro.props;
       case "core/social-links":
         return (
           <div class={classes} style={styles}>
-            <BlockRendererChildren blocks={block.innerBlocks || []} />
+            <BlockRendererChildren blocks={block.innerBlocks || []} postId={postId} />
           </div>
         );
       case "core/social-link":
@@ -95,7 +96,7 @@ const { blocks } = Astro.props;
           </div>
         );
       case "core/template-part":
-        return <BlockRendererChildren blocks={block.innerBlocks || []} />;
+        return <BlockRendererChildren blocks={block.innerBlocks || []} postId={postId} />;
       default:
         return null;
     }

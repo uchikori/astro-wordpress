@@ -1,5 +1,6 @@
 import type { Block } from "@wp-block-tools/styles";
 import type { APIRoute } from "astro";
+//ページデータをGraphQL API経由で取得し、そのデータを返すAPIルートを定義
 export const GET: APIRoute = async ({ params }) => {
   const uri = params.uri;
   const response = await fetch(`${import.meta.env.WPGRAPHQL_URL}`, {
@@ -12,7 +13,7 @@ export const GET: APIRoute = async ({ params }) => {
     query PageQuery($uri: String!) {
       nodeByUri(uri: $uri) {
         ... on ContentNode {
-          id
+          databaseId
           blocks
           seo {
             metaDesc
@@ -31,6 +32,7 @@ export const GET: APIRoute = async ({ params }) => {
   return new Response(JSON.stringify({ data: data.nodeByUri }));
 };
 
+// /buying/all-propertyページのみを取得し静的パスを生成
 export async function getStaticPaths() {
   //api/buying/all-properties.json
   const response = await fetch(`${import.meta.env.WPGRAPHQL_URL}`, {
