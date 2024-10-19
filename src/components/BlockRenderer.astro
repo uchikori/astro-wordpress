@@ -13,6 +13,7 @@ import TickItem from "./TickItem.astro";
 import SocialLink from "./SocialLink.astro";
 import PropertyDetails from "./PropertyDetails.astro";
 import PropertySearch from "./PropertySearch.astro";
+import ContactForm7 from "./ContactForm7.tsx";
 type Props = {
   postId: number;
   blocks: Block[];
@@ -25,6 +26,8 @@ const { blocks, postId } = Astro.props;
     const { styles, classes } = getBlockStyling(block);
 
     switch (block.name) {
+      case "contact-form-7/contact-form-selector":
+        return <ContactForm7 client:only="react" formId={block.attributes?.id} formMarkup={block.attributes?.form_markup} />;
       case "astroestates/property-search":
         return <PropertySearch />;
       case "astroestates/property-details":
