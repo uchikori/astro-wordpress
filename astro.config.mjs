@@ -7,12 +7,14 @@ import react from "@astrojs/react";
 
 import vercel from "@astrojs/vercel/serverless";
 
-const env = loadEnv(process.env.NODE_ENV || "development", process.cwd(), "");
+const { PUBLIC_WP_URL } = loadEnv(process.env.NODE_ENV || "development", process.cwd(), "");
+console.log(PUBLIC_WP_URL);
 
 // https://astro.build/config
 export default defineConfig({
+  site: "https://astro-wordpress-lime.vercel.app",
   image: {
-    domains: [env.PUBLIC_WP_URL],
+    domains: [PUBLIC_WP_URL],
   },
 
   integrations: [

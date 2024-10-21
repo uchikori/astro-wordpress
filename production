@@ -1,0 +1,5 @@
+WPGRAPHQL_URL="https://astro-estates.uchiwa-design.net/graphql"
+PUBLIC_SITE_URL="astro-wordpress-lime.vercel.app"
+PUBLIC_WP_URL="https://astro-estates.uchiwa-design.net"
+PUBLIC_PROTOCOL="https://"
+NODE_ENV="production"

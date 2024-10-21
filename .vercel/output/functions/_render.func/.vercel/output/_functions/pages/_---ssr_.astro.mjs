@@ -1,10 +1,10 @@
-import { c as createComponent, r as renderTemplate, a as renderComponent, m as maybeRenderHead, b as createAstro } from '../chunks/astro/server_D6AYqLb_.mjs';
+import { b as createAstro, c as createComponent, r as renderTemplate, a as renderComponent, m as maybeRenderHead } from '../chunks/astro/server_Di7_EmxV.mjs';
 import 'kleur/colors';
-import { $ as $$BlockRenderer } from '../chunks/BlockRenderer_BEPQhJ-c.mjs';
-import { $ as $$CommonHead } from '../chunks/CommonHead_Byl7XkLm.mjs';
+import { $ as $$BlockRenderer } from '../chunks/BlockRenderer_B4kLWq83.mjs';
+import { $ as $$CommonHead } from '../chunks/CommonHead_Dym4zYWV.mjs';
 export { renderers } from '../renderers.mjs';
 
-const $$Astro = createAstro();
+const $$Astro = createAstro("https://astro-wordpress-lime.vercel.app");
 const prerender = false;
 const $$ = createComponent(async ($$result, $$props, $$slots) => {
   const Astro2 = $$result.createAstro($$Astro, $$props, $$slots);
