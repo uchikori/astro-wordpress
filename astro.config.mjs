@@ -11,6 +11,7 @@ const { PUBLIC_WP_URL } = loadEnv(process.env.NODE_ENV || "development", process
 
 // https://astro.build/config
 export default defineConfig({
+  site: "https://astro-wordpress-lime.vercel.app",
   image: {
     domains: [PUBLIC_WP_URL],
   },
