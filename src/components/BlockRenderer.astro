@@ -95,7 +95,7 @@ const { blocks, postId } = Astro.props;
       case "core/site-logo":
         return (
           <div class={classes} style={styles}>
-            <Image src={block.attributes?.url || ""} width={block.attributes?.width || "75"} height={block.attributes?.width || "75"} alt={block.attributes?.alt} />
+            <Image src={block.attributes?.url || ""} width={block.attributes?.width || "50"} height={block.attributes?.width || "50"} widths={[50, 75, 100]} alt={block.attributes?.alt} />
           </div>
         );
       case "core/template-part":
