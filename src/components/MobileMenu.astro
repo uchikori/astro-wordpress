@@ -1,0 +1,28 @@
+---
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBars } from "@fortawesome/free-solid-svg-icons";
+---
+
+<div>
+  <div class="text-3xl humberger">
+    <FontAwesomeIcon icon={faBars} />
+  </div>
+  <div class="mobile-menu-open">mobile menu open</div>
+</div>
+
+<style>
+  .mobile-menu-open {
+    display: none;
+  }
+  .mobile-menu-open.isOpen {
+    display: block;
+  }
+</style>
+
+<script>
+  const humberger = document.querySelector(".humberger");
+  const open = document.querySelector(".mobile-menu-open");
+  humberger?.addEventListener("click", () => {
+    open?.classList.toggle("isOpen");
+  });
+</script>
