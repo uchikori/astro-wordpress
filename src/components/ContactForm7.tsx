@@ -43,6 +43,7 @@ export default function ContactForm7({ formId, formMarkup }: Props) {
         };
         // formタグに対してオリジナルイベントを設定
         formElement.addEventListener("submit", handleSubmit);
+        //クリーンアップ関数
         return () => {
           formElement.removeEventListener("submit", handleSubmit);
         };
