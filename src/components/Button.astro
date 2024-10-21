@@ -9,7 +9,7 @@ type Props = {
 };
 
 const { styles, classes, content, url } = Astro.props;
-const href = replaceUrls(url || "#", Astro.url.host);
+const href = replaceUrls(url || "#", import.meta.env.PUBLIC_SITE_URL);
 ---
 
 <a href={href} class={joinClasses("inline-block uppercase font-bold tracking-[1.3px] bg-blast-off", classes)} style={styles} set:html={content} />

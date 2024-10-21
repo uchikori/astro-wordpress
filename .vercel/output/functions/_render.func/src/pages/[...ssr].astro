@@ -1,5 +1,25 @@
 ---
 export const prerender = false;
+import BlockRenderer from "../components/BlockRenderer.astro";
+import type { Block } from "@wp-block-tools/styles";
+import CommonHead from "../components/CommonHead.astro";
+
+const { ssr } = Astro.params;
+
+const response = await fetch(`${Astro.url.origin}/api/page-data/${ssr ? `/${ssr}` : ""}.json`);
+
+const { data } = await response.json();
+
+if (!data) {
+  return Astro.redirect("/404");
+}
+const { blocks } = data;
+const { title, metaDesc } = data.seo || {};
 ---
 
-<div>this is the ssr page</div>
+<html lang="ja">
+  <CommonHead title={title || ""} description={metaDesc || ""} />
+  <body>
+    <BlockRenderer blocks={blocks} postId={data.databaseId} />
+  </body>
+</html>

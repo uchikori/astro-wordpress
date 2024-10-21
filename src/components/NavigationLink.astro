@@ -7,7 +7,7 @@ type Props = {
   url: string;
 };
 const { styles, classes, label, url } = Astro.props;
-const href = replaceUrls(url, Astro.url.host);
+const href = replaceUrls(url, import.meta.env.PUBLIC_SITE_URL);
 ---
 
 <li class={classes} style={styles}>

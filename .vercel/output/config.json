@@ -16,8 +16,17 @@
 			"dest": "_render"
 		},
 		{
+			"src": "^\\/api\\/page-data\\/(.*?)\\.json\\/?$",
+			"dest": "_render"
+		},
+		{
 			"src": "^(?:\\/(.*?))?\\/?$",
 			"dest": "_render"
+		},
+		{
+			"src": "/.*",
+			"dest": "/404.html",
+			"status": 404
 		}
 	]
 }
