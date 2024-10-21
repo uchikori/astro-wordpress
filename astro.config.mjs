@@ -7,6 +7,8 @@ import react from "@astrojs/react";
 
 import vercel from "@astrojs/vercel/serverless";
 
+import robotsTxt from "astro-robots-txt";
+
 const { PUBLIC_WP_URL } = loadEnv(process.env.NODE_ENV || "development", process.cwd(), "");
 console.log(PUBLIC_WP_URL);
 
@@ -17,12 +19,9 @@ export default defineConfig({
     domains: [PUBLIC_WP_URL],
   },
 
-  integrations: [
-    tailwind({
-      applyBaseStyles: false,
-    }),
-    react(),
-  ],
+  integrations: [tailwind({
+    applyBaseStyles: false,
+  }), react(), robotsTxt()],
 
   server: {
     host: true,
